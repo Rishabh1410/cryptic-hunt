@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,9 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(),
       home: MyHomePage(title: 'Buonty Hunt'),
-    routes: {
-        'LinkPage':(context)=>LinkPage()
-    },
+      routes: {'LinkPage': (context) => LinkPage()},
     );
   }
 }
@@ -93,26 +90,68 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.red[400],
         onPressed: () {
           int i;
-          upload().then((value) async {
-            for (i = 0; i < (data['result']['tags']).length; i++) {
-              if (data['result']['tags'][i]['tag']['en'] == 'computer') {
-                Navigator.pushNamed(context, 'LinkPage');
-                //await launch('www.google.com');
-                break;
-              }
+          for (i = 0; i < (data['result']['tags']).length; i++) {
+            if (data['result']['tags'][i]['tag']['en'] == 'sofa') {
+              Navigator.pushNamed(context, 'LinkPage');
+              break;
             }
+          }
 
-            if (i == (((data['result']['tags']).length))) {
-              print(i);
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wrong answer!Try again'),backgroundColor: Colors.red[300],));
+          if (i == (((data['result']['tags']).length))) {
+            print(i);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Wrong answer!Try again'),
+              backgroundColor: Colors.red[300],
+            ));
+          }
+          //
 
-            }
-          });
+          // upload().then((value) async {
+          //   for (i = 0; i < (data['result']['tags']).length; i++) {
+          //     if (data['result']['tags'][i]['tag']['en'] == 'sofa') {
+          //       Navigator.pushNamed(context, 'LinkPage');
+          //       break;
+          //     }
+          //   }
+
+          //   if (i == (((data['result']['tags']).length))) {
+          //     print(i);
+          //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //       content: Text('Wrong answer!Try again'),
+          //       backgroundColor: Colors.red[300],
+          //     ));
+          //   }
+          // });
         },
         tooltip: 'Upload',
-        child: Icon(
-          Icons.send,
-        ),
+        child:
+            // Icon(
+            //   Icons.send,
+            // ),
+            FutureBuilder(
+                future: upload(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData &&
+                      snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(
+                        backgroundColor: Colors.amber);
+                  }
+                  return Icon(Icons.send);
+                  // for (i = 0; i < (data['result']['tags']).length; i++) {
+                  //   if (data['result']['tags'][i]['tag']['en'] == 'sofa') {
+                  //     Navigator.pushNamed(context, 'LinkPage');
+                  //     break;
+                  //   }
+                  // }
+
+                  // if (i == (((data['result']['tags']).length))) {
+                  //   print(i);
+                  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  //     content: Text('Wrong answer!Try again'),
+                  //     backgroundColor: Colors.red[300],
+                  //   ));
+                  // }
+                }),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
