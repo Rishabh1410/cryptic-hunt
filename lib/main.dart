@@ -1,3 +1,4 @@
+import 'package:bountyhunt/LinkPage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(),
       home: MyHomePage(title: 'Buonty Hunt'),
+    routes: {
+        'LinkPage':(context)=>LinkPage()
+    },
     );
   }
 }
@@ -91,16 +95,17 @@ class _MyHomePageState extends State<MyHomePage> {
           int i;
           upload().then((value) async {
             for (i = 0; i < (data['result']['tags']).length; i++) {
-              if (data['result']['tags'][i]['tag']['en'] == 'television') {
-                print(data['result']['tags'].length);
-                print(i);
+              if (data['result']['tags'][i]['tag']['en'] == 'computer') {
+                Navigator.pushNamed(context, 'LinkPage');
                 //await launch('www.google.com');
                 break;
               }
             }
 
-            if (i == (((data['result']['tags']).length) - 1)) {
+            if (i == (((data['result']['tags']).length))) {
               print(i);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wrong answer!Try again'),backgroundColor: Colors.red[300],));
+
             }
           });
         },
